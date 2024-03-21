@@ -171,7 +171,7 @@ public class CategoriesController : Controller
             //ViewData["message"] = $"<div class='alert alert-danger'><strong>Error!</strong>{ex.Message}</div>";
             TempData["message"] = $"<div class='alert alert-danger'><strong>Error!</strong>{ex.Message}</div>";
         }
-        return RedirectToAction("GetFromServices");
+        return RedirectToAction("Index");
     }
 
     //[Authorize]
@@ -214,7 +214,7 @@ public class CategoriesController : Controller
             ViewData["message"] = $"<div class='alert alert-danger'><strong>Error!</strong>{ex.Message}</div>";
             return View(categoryEdit);
         }
-        return RedirectToAction("GetFromServices");
+        return RedirectToAction("Index");
     }
 
 
@@ -239,7 +239,7 @@ public class CategoriesController : Controller
         if (model == null)
         {
             TempData["message"] = @"<div class='alert alert-danger'><strong>Error!</strong>Category Not Found !</div>";
-            return RedirectToAction("GetFromServices");
+            return RedirectToAction("Index");
         }
         return View(model);
     }
@@ -258,7 +258,7 @@ public class CategoriesController : Controller
             TempData["message"] = $"<div class='alert alert-danger'><strong>Error!</strong>{ex.Message}</div>";
             return View(category);
         }
-        return RedirectToAction("GetFromServices");
+        return RedirectToAction("Index");
     }
 
     public IActionResult DisplayDropdownList()
