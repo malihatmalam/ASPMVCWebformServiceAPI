@@ -43,6 +43,7 @@ namespace SampleMVC.Services
 
         public async Task<CategoryDTO> GetById(int id)
         {
+            _logger.LogInformation(GetBaseUrl());
             var httpResponse = await _client.GetAsync($"{GetBaseUrl()}/{id}");
 
             if (!httpResponse.IsSuccessStatusCode)

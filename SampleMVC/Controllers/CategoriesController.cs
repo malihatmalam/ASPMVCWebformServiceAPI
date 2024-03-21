@@ -7,7 +7,7 @@ using SampleMVC.ViewModels;
 namespace SampleMVC.Controllers;
 
 
-[Authorize(Roles = "admin,contributor")]
+//[Authorize(Roles = "admin,contributor")]
 public class CategoriesController : Controller
 {
     private readonly ICategoryServices _categoryServices;
@@ -21,66 +21,66 @@ public class CategoriesController : Controller
     }
 
 
-    public IActionResult Index(int pageNumber = 1, int pageSize = 5, string search = "", string act = "")
-    {
+    //public IActionResult Index(int pageNumber = 1, int pageSize = 5, string search = "", string act = "")
+    //{
 
-        /*if (HttpContext.Session.GetString("user") == null)
-        {
-            TempData["message"] = @"<div class='alert alert-danger'><strong>Error!</strong>Anda harus login terlebih dahulu !</div>";
-            return RedirectToAction("Login", "Users");
-        }
-        user = JsonSerializer.Deserialize<UserDTO>(HttpContext.Session.GetString("user"));
-        //pengecekan session username
-        if (Auth.CheckRole("reader,admin,contributor", user.Roles.ToList()) == false)
-        {
-            TempData["message"] = @"<div class='alert alert-danger'><strong>Error!</strong>Anda tidak memiliki hak akses !</div>";
-            return RedirectToAction("Index", "Home");
-        }*/
-
-
-        if (TempData["message"] != null)
-        {
-            ViewData["message"] = TempData["message"];
-        }
-
-        ViewData["search"] = search;
-
-        CategoriesViewModel categoriesViewModel = new CategoriesViewModel()
-        {
-            Categories = _categoryBLL.GetWithPaging(pageNumber, pageSize, search)
-        };
-
-        //var models = _categoryBLL.GetWithPaging(pageNumber, pageSize, search);
-        var maxsize = _categoryBLL.GetCountCategories(search);
-        //return Content($"{pageNumber} - {pageSize} - {search} - {act}");
-
-        if (act == "next")
-        {
-            if (pageNumber * pageSize < maxsize)
-            {
-                pageNumber += 1;
-            }
-            ViewData["pageNumber"] = pageNumber;
-        }
-        else if (act == "prev")
-        {
-            if (pageNumber > 1)
-            {
-                pageNumber -= 1;
-            }
-            ViewData["pageNumber"] = pageNumber;
-        }
-        else
-        {
-            ViewData["pageNumber"] = 2;
-        }
-
-        ViewData["pageSize"] = pageSize;
-        //ViewData["action"] = action;
+    //    /*if (HttpContext.Session.GetString("user") == null)
+    //    {
+    //        TempData["message"] = @"<div class='alert alert-danger'><strong>Error!</strong>Anda harus login terlebih dahulu !</div>";
+    //        return RedirectToAction("Login", "Users");
+    //    }
+    //    user = JsonSerializer.Deserialize<UserDTO>(HttpContext.Session.GetString("user"));
+    //    //pengecekan session username
+    //    if (Auth.CheckRole("reader,admin,contributor", user.Roles.ToList()) == false)
+    //    {
+    //        TempData["message"] = @"<div class='alert alert-danger'><strong>Error!</strong>Anda tidak memiliki hak akses !</div>";
+    //        return RedirectToAction("Index", "Home");
+    //    }*/
 
 
-        return View(categoriesViewModel);
-    }
+    //    if (TempData["message"] != null)
+    //    {
+    //        ViewData["message"] = TempData["message"];
+    //    }
+
+    //    ViewData["search"] = search;
+
+    //    //CategoriesViewModel categoriesViewModel = new CategoriesViewModel()
+    //    //{
+    //    //    Categories = _categoryBLL.GetWithPaging(pageNumber, pageSize, search)
+    //    //};
+
+    //    ////var models = _categoryBLL.GetWithPaging(pageNumber, pageSize, search);
+    //    //var maxsize = _categoryBLL.GetCountCategories(search);
+    //    ////return Content($"{pageNumber} - {pageSize} - {search} - {act}");
+
+    //    //if (act == "next")
+    //    //{
+    //    //    if (pageNumber * pageSize < maxsize)
+    //    //    {
+    //    //        pageNumber += 1;
+    //    //    }
+    //    //    ViewData["pageNumber"] = pageNumber;
+    //    //}
+    //    //else if (act == "prev")
+    //    //{
+    //    //    if (pageNumber > 1)
+    //    //    {
+    //    //        pageNumber -= 1;
+    //    //    }
+    //    //    ViewData["pageNumber"] = pageNumber;
+    //    //}
+    //    //else
+    //    //{
+    //    //    ViewData["pageNumber"] = 2;
+    //    //}
+
+    //    //ViewData["pageSize"] = pageSize;
+    //    //ViewData["action"] = action;
+
+
+    //    return View(categoriesViewModel);
+    //}
 
 
     public async Task<IActionResult> GetFromServices()
@@ -99,7 +99,7 @@ public class CategoriesController : Controller
     }
 
 
-    public IActionResult Detail(int id)
+    public async Task<IActionResult> Detail(int id)
     {
         /*if (HttpContext.Session.GetString("user") == null)
         {
@@ -115,11 +115,11 @@ public class CategoriesController : Controller
             return RedirectToAction("Index", "Home");
         }*/
 
-        var model = _categoryServices.GetById(id);
+        var model = await _categoryServices.GetById(id);
         return View(model);
     }
 
-    [Authorize]
+    //[Authorize]
     public IActionResult Create()
     {
 
@@ -143,7 +143,7 @@ public class CategoriesController : Controller
         return PartialView("_CreateCategoryPartial");
     }
 
-    [Authorize]
+    //[Authorize]
     [HttpPost]
     public IActionResult Create(SampleMVC.ViewModels.CategoriesViewModel categoriesViewModel)
     {
@@ -171,11 +171,11 @@ public class CategoriesController : Controller
             //ViewData["message"] = $"<div class='alert alert-danger'><strong>Error!</strong>{ex.Message}</div>";
             TempData["message"] = $"<div class='alert alert-danger'><strong>Error!</strong>{ex.Message}</div>";
         }
-        return RedirectToAction("Index");
+        return RedirectToAction("GetFromServices");
     }
 
-    [Authorize]
-    public IActionResult Edit(int id)
+    //[Authorize]
+    public async Task<IActionResult> Edit(int id)
     {
         /*if (HttpContext.Session.GetString("user") == null)
         {
@@ -191,7 +191,7 @@ public class CategoriesController : Controller
             return RedirectToAction("Index", "Home");
         }*/
 
-        var model = _categoryServices.GetById(id);
+        var model = await _categoryServices.GetById(id);
         if (model == null)
         {
             TempData["message"] = @"<div class='alert alert-danger'><strong>Error!</strong>Category Not Found !</div>";
@@ -200,7 +200,7 @@ public class CategoriesController : Controller
         return View(model);
     }
 
-    [Authorize]
+    //[Authorize]
     [HttpPost]
     public IActionResult Edit(int id, CategoryUpdateDTO categoryEdit)
     {
@@ -214,12 +214,12 @@ public class CategoriesController : Controller
             ViewData["message"] = $"<div class='alert alert-danger'><strong>Error!</strong>{ex.Message}</div>";
             return View(categoryEdit);
         }
-        return RedirectToAction("Index");
+        return RedirectToAction("GetFromServices");
     }
 
 
-    [Authorize]
-    public IActionResult Delete(int id)
+    //[Authorize]
+    public async Task<IActionResult> Delete(int id)
     {
         /*if (HttpContext.Session.GetString("user") == null)
         {
@@ -235,16 +235,16 @@ public class CategoriesController : Controller
             return RedirectToAction("Login", "Users");
         }*/
 
-        var model = _categoryServices.GetById(id);
+        var model = await _categoryServices.GetById(id);
         if (model == null)
         {
             TempData["message"] = @"<div class='alert alert-danger'><strong>Error!</strong>Category Not Found !</div>";
-            return RedirectToAction("Index");
+            return RedirectToAction("GetFromServices");
         }
         return View(model);
     }
 
-    [Authorize]
+    //[Authorize]
     [HttpPost]
     public IActionResult Delete(int id, CategoryDTO category)
     {
@@ -258,7 +258,7 @@ public class CategoriesController : Controller
             TempData["message"] = $"<div class='alert alert-danger'><strong>Error!</strong>{ex.Message}</div>";
             return View(category);
         }
-        return RedirectToAction("Index");
+        return RedirectToAction("GetFromServices");
     }
 
     public IActionResult DisplayDropdownList()
