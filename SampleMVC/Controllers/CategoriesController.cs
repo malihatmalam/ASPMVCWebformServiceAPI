@@ -21,66 +21,66 @@ public class CategoriesController : Controller
     }
 
 
-    //public IActionResult Index(int pageNumber = 1, int pageSize = 5, string search = "", string act = "")
-    //{
+    public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 5, string search = "", string act = "")
+    {
 
-    //    /*if (HttpContext.Session.GetString("user") == null)
-    //    {
-    //        TempData["message"] = @"<div class='alert alert-danger'><strong>Error!</strong>Anda harus login terlebih dahulu !</div>";
-    //        return RedirectToAction("Login", "Users");
-    //    }
-    //    user = JsonSerializer.Deserialize<UserDTO>(HttpContext.Session.GetString("user"));
-    //    //pengecekan session username
-    //    if (Auth.CheckRole("reader,admin,contributor", user.Roles.ToList()) == false)
-    //    {
-    //        TempData["message"] = @"<div class='alert alert-danger'><strong>Error!</strong>Anda tidak memiliki hak akses !</div>";
-    //        return RedirectToAction("Index", "Home");
-    //    }*/
-
-
-    //    if (TempData["message"] != null)
-    //    {
-    //        ViewData["message"] = TempData["message"];
-    //    }
-
-    //    ViewData["search"] = search;
-
-    //    //CategoriesViewModel categoriesViewModel = new CategoriesViewModel()
-    //    //{
-    //    //    Categories = _categoryBLL.GetWithPaging(pageNumber, pageSize, search)
-    //    //};
-
-    //    ////var models = _categoryBLL.GetWithPaging(pageNumber, pageSize, search);
-    //    //var maxsize = _categoryBLL.GetCountCategories(search);
-    //    ////return Content($"{pageNumber} - {pageSize} - {search} - {act}");
-
-    //    //if (act == "next")
-    //    //{
-    //    //    if (pageNumber * pageSize < maxsize)
-    //    //    {
-    //    //        pageNumber += 1;
-    //    //    }
-    //    //    ViewData["pageNumber"] = pageNumber;
-    //    //}
-    //    //else if (act == "prev")
-    //    //{
-    //    //    if (pageNumber > 1)
-    //    //    {
-    //    //        pageNumber -= 1;
-    //    //    }
-    //    //    ViewData["pageNumber"] = pageNumber;
-    //    //}
-    //    //else
-    //    //{
-    //    //    ViewData["pageNumber"] = 2;
-    //    //}
-
-    //    //ViewData["pageSize"] = pageSize;
-    //    //ViewData["action"] = action;
+        /*if (HttpContext.Session.GetString("user") == null)
+        {
+            TempData["message"] = @"<div class='alert alert-danger'><strong>Error!</strong>Anda harus login terlebih dahulu !</div>";
+            return RedirectToAction("Login", "Users");
+        }
+        user = JsonSerializer.Deserialize<UserDTO>(HttpContext.Session.GetString("user"));
+        //pengecekan session username
+        if (Auth.CheckRole("reader,admin,contributor", user.Roles.ToList()) == false)
+        {
+            TempData["message"] = @"<div class='alert alert-danger'><strong>Error!</strong>Anda tidak memiliki hak akses !</div>";
+            return RedirectToAction("Index", "Home");
+        }*/
 
 
-    //    return View(categoriesViewModel);
-    //}
+        if (TempData["message"] != null)
+        {
+            ViewData["message"] = TempData["message"];
+        }
+
+        ViewData["search"] = search;
+
+        CategoriesViewModel categoriesViewModel = new CategoriesViewModel()
+        {
+            Categories = await _categoryServices.GetAllWithPaging(pageNumber, pageSize, search)
+        };
+
+        //var models = _categoryBLL.GetWithPaging(pageNumber, pageSize, search);
+        var maxsize = (await _categoryServices.GetAll()).Count();
+        //return Content($"{pageNumber} - {pageSize} - {search} - {act}");
+
+        if (act == "next")
+        {
+            if (pageNumber * pageSize < maxsize)
+            {
+                pageNumber += 1;
+            }
+            ViewData["pageNumber"] = pageNumber;
+        }
+        else if (act == "prev")
+        {
+            if (pageNumber > 1)
+            {
+                pageNumber -= 1;
+            }
+            ViewData["pageNumber"] = pageNumber;
+        }
+        else
+        {
+            ViewData["pageNumber"] = 2;
+        }
+
+        ViewData["pageSize"] = pageSize;
+        //ViewData["action"] = action;
+
+
+        return View(categoriesViewModel);
+    }
 
 
     public async Task<IActionResult> GetFromServices()

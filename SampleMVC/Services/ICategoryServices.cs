@@ -9,5 +9,6 @@ namespace SampleMVC.Services
         Task<CategoryDTO> Insert(CategoryCreateDTO categoryCreateDTO);
         Task Update(int id, CategoryUpdateDTO categoryUpdateDTO);
         Task Delete(int id);
+        Task<IEnumerable<CategoryDTO>> GetAllWithPaging(int pageNumber, int pageSize, string name);
     }
 }

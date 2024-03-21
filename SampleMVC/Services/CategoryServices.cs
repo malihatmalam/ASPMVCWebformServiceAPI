@@ -104,5 +104,31 @@ namespace SampleMVC.Services
                 throw new Exception("Cannot delete category");
             }
         }
+
+        public async Task<IEnumerable<CategoryDTO>> GetAllWithPaging(int pageNumber, int pageSize, string name)
+        {
+            //_logger.LogInformation(GetBaseUrl());
+            //var httpResponse = await _client.GetAsync($"{GetBaseUrl()}/pageNumber={pageNumber}/pageSize={pageSize}/search={name}");
+            var httpResponse = await _client.GetAsync(GetBaseUrl());
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                throw new Exception("Cannot retrieve category");
+            }
+
+            var content = await httpResponse.Content.ReadAsStringAsync();
+            var categories = JsonSerializer.Deserialize<IEnumerable<CategoryDTO>>(content, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            var pagingCategories = categories.OrderBy(c => c.CategoryName)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize);
+            if (name != null)
+            {
+                pagingCategories.Where(c => c.CategoryName == name);
+            }
+
+            return pagingCategories;
+        }
     }
 }
