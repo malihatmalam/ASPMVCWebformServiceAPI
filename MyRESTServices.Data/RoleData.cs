@@ -16,25 +16,29 @@ namespace MyRESTServices.Data
         {
             _context = context;
         }
+
         public async Task<Task> AddUserToRole(string username, int roleId)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             if (user == null)
             {
-                throw new ArgumentException("Category not found");
+                throw new ArgumentException("User not found");
             }
 
             var role = await _context.Roles.FirstOrDefaultAsync(r => r.RoleId == roleId);
             if (role == null)
             {
-                throw new ArgumentException("Rule not found");
+                throw new ArgumentException("Role not found");
             }
 
-            try {
+            try
+            {
                 role.Usernames.Add(user);
                 await _context.SaveChangesAsync();
-            } 
-            catch (Exception ex) {
+                return Task.CompletedTask;
+            }
+            catch (Exception ex)
+            {
                 throw new ArgumentException(ex.Message);
             }
 
@@ -56,34 +60,35 @@ namespace MyRESTServices.Data
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new ArgumentException(ex.Message);
             }
         }
 
         public async Task<IEnumerable<Role>> GetAll()
         {
-            var roles = await _context.Roles.OrderBy(r => r.RoleId).ToListAsync();
+            var roles = await _context.Roles.OrderBy(r => r.RoleName).ToListAsync();
             return roles;
         }
 
         public async Task<Role> GetById(int id)
         {
-            var user = await _context.Roles.FirstOrDefaultAsync(r => r.RoleId == id);
-            if (user == null)
+            var role = await _context.Roles.FirstOrDefaultAsync(r => r.RoleId == id);
+            if (role == null)
             {
-                throw new ArgumentException("User not found");
+                throw new ArgumentException("Role not found");
             }
-            return user;
+            return role;
         }
 
         public async Task<Role> Insert(Role entity)
         {
-            try {
+            try
+            {
                 _context.Roles.Add(entity);
                 await _context.SaveChangesAsync();
                 return entity;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

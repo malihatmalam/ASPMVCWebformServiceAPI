@@ -2,8 +2,11 @@
 
 namespace MyRESTServices.Data.Interfaces
 {
-    public interface IUserData 
+    public interface IUserData
     {
+        Task<IEnumerable<User>> GetAll();
+        Task<User> Insert(User entity);
+        Task<User> Update(User entity);
         Task<IEnumerable<User>> GetAllWithRoles();
         Task<User> Insert(User entity);
         Task<User> Update(User entity);

@@ -26,15 +26,17 @@ namespace MyRESTServices.Data
                 {
                     throw new ArgumentException("User not found");
                 }
-                user.Password = Md5Hash.GetHash(newPassword);
+                user.Password = Helpers.Md5Hash.GetHash(newPassword);
                 await _context.SaveChangesAsync();
                 return Task.CompletedTask;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new ArgumentException($"{ex.Message}");
             }
         }
+
+
 
         public async Task<IEnumerable<User>> GetAll()
         {
@@ -42,9 +44,10 @@ namespace MyRESTServices.Data
             return users;
         }
 
-        public Task<IEnumerable<User>> GetAllWithRoles()
+        public async Task<IEnumerable<User>> GetAllWithRoles()
         {
-            throw new NotImplementedException();
+            var users = await _context.Users.Include(u => u.Roles).ToListAsync();
+            return users;
         }
 
         public Task<User> GetById(int id)
@@ -64,15 +67,13 @@ namespace MyRESTServices.Data
 
         public async Task<User> GetUserWithRoles(string username)
         {
-            try
+            var user = await _context.Users.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Username == username);
+            if (user == null)
             {
-                var user = await _context.Users.Include(r => r.Roles).FirstOrDefaultAsync(u => u.Username == username);
-                if (user == null)
-                {
-                    throw new ArgumentException("User not found");
-                }
-                return user;
+                throw new ArgumentException("User not found");
             }
+            return user;
+        }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
@@ -89,21 +90,19 @@ namespace MyRESTServices.Data
             }
             catch (Exception ex)
             {
-                throw new ArgumentException(ex.Message);
+                throw new ArgumentException($"{ex.Message}");
             }
         }
 
         public async Task<User> Login(string username, string password)
         {
-            try
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == Helpers.Md5Hash.GetHash(password));
+            if (user == null)
             {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == Md5Hash.GetHash(password));
-                if (user == null)
-                {
-                    throw new ArgumentException("User not found");
-                }
-                return user;
+                throw new ArgumentException("User not found");
             }
+            return user;
+        }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
@@ -120,18 +119,19 @@ namespace MyRESTServices.Data
                     throw new ArgumentException("User not found");
                 }
                 user.FirstName = entity.FirstName;
-                user .LastName = entity.LastName;
-                user.Address = entity.Address;   
+                user.LastName = entity.LastName;
                 user.Email = entity.Email;
+                user.Address = entity.Address;
                 user.Telp = entity.Telp;
                 user.SecurityQuestion = entity.SecurityQuestion;
                 user.SecurityAnswer = entity.SecurityAnswer;
+
                 await _context.SaveChangesAsync();
                 return user;
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new ArgumentException(ex.Message);
             }
         }
     }
