@@ -2,9 +2,11 @@
 
 namespace MyRESTServices.Data.Interfaces
 {
-    public interface IUserData : ICrudData<User>
+    public interface IUserData 
     {
         Task<IEnumerable<User>> GetAllWithRoles();
+        Task<User> Insert(User entity);
+        Task<User> Update(User entity);
         Task<User> GetUserWithRoles(string username);
         Task<User> GetByUsername(string username);
         Task<User> Login(string username, string password);
