@@ -67,13 +67,15 @@ namespace MyRESTServices.Data
 
         public async Task<User> GetUserWithRoles(string username)
         {
-            var user = await _context.Users.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Username == username);
-            if (user == null)
+            try
             {
-                throw new ArgumentException("User not found");
+                var user = await _context.Users.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Username == username);
+                if (user == null)
+                {
+                    throw new ArgumentException("User not found");
+                }
+                return user;
             }
-            return user;
-        }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
@@ -84,6 +86,7 @@ namespace MyRESTServices.Data
         {
             try
             {
+                entity.Password = Helpers.Md5Hash.GetHash(entity.Password);
                 _context.Users.Add(entity);
                 await _context.SaveChangesAsync();
                 return entity;
@@ -96,13 +99,15 @@ namespace MyRESTServices.Data
 
         public async Task<User> Login(string username, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == Helpers.Md5Hash.GetHash(password));
-            if (user == null)
+            try
             {
-                throw new ArgumentException("User not found");
+                var user = await _context.Users.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Username == username && u.Password == Helpers.Md5Hash.GetHash(password));
+                if (user == null)
+                {
+                    throw new ArgumentException("User not found");
+                }
+                return user;
             }
-            return user;
-        }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);

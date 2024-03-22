@@ -1,6 +1,8 @@
-﻿using MyRESTServices.BLL.DTOs;
+﻿using AutoMapper;
+using MyRESTServices.BLL.DTOs;
 using MyRESTServices.BLL.Interfaces;
 using MyRESTServices.Data.Interfaces;
+using MyRESTServices.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +14,11 @@ namespace MyRESTServices.BLL
     public class RoleBLL : IRoleBLL
     {
         private readonly IRoleData _roleData;
-        public RoleBLL(IRoleData roleData) 
+        private readonly IMapper _mapper;
+        public RoleBLL(IRoleData roleData, IMapper mapper) 
         {
             _roleData = roleData;
+            _mapper = mapper;
         }
 
         public Task<Task> AddRole(string roleName)
@@ -35,9 +39,18 @@ namespace MyRESTServices.BLL
             }
         }
 
-        public Task<IEnumerable<RoleDTO>> GetAllRoles()
+        public async Task<IEnumerable<RoleDTO>> GetAllRoles()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var roles = await _roleData.GetAll();
+                var rolesDTO = _mapper.Map<IEnumerable<RoleDTO>>(roles);
+                return rolesDTO;
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
         }
     }
 }

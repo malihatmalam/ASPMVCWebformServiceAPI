@@ -8,8 +8,6 @@ namespace MyRESTServices.Data.Interfaces
         Task<User> Insert(User entity);
         Task<User> Update(User entity);
         Task<IEnumerable<User>> GetAllWithRoles();
-        Task<User> Insert(User entity);
-        Task<User> Update(User entity);
         Task<User> GetUserWithRoles(string username);
         Task<User> GetByUsername(string username);
         Task<User> Login(string username, string password);
